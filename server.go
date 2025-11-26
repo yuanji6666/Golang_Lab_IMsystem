@@ -4,6 +4,7 @@ import (
 	"net"
 	"fmt"
 	"sync"
+	"io"
 )
 type Server struct {
 	Ip string
@@ -55,7 +56,26 @@ func (this *Server) Handler(conn net.Conn) {
 	this.mapLock.Unlock()
 	//broadcast new user
 	this.BroadCast(user,"online...")
-	//
+	//catch message from client
+	go func() {
+		buf := make([]byte,4096)
+		for{
+			n,err:= conn.Read(buf)
+			if n==0 {
+				this.BroadCast(user,"下线")
+				return
+			}
+			if err!=nil && err!=io.EOF {
+				fmt.Println("conn read err:",err)
+				return
+			}
+
+			msg:= string(buf[:n-1])
+
+			this.BroadCast(user,msg)
+		}
+	}()
+
 	select{}
 }
 
