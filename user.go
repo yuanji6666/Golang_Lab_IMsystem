@@ -91,7 +91,7 @@ func (this *User)DoMessage(msg string){
 			this.SendMsg("message is empty,please type in characters")
 			return
 		}
-		remoteUser.SendMsg(this.Name+" send message to you : "+ "["+content+"]")
+		remoteUser.SendMsg(this.Name+" send message to you : "+ "["+content+"]"+"\n")
 	}else{
 		
 		this.server.BroadCast(this,msg)
