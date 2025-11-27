@@ -2,6 +2,7 @@ package main
 
 import (
 	"net"
+	"strings"
 	
 )
 
@@ -76,6 +77,24 @@ func (this *User)DoMessage(msg string){
 			this.SendMsg("success : name changed"+this.Name+ "\n")
 
 		}
+	}else if len(msg)>=4&&msg[:3]=="to|"{
+		remoteName:= strings.Split(msg,"|")[1] 
+		if remoteName ==""{
+			this.SendMsg("message format incorrect!")
+			return
+		}
+
+		remoteUser,ok := this.server.OnlineMap[remoteName]
+		if !ok {
+			this.SendMsg("user not exist ,please check")
+			return 
+		}
+		content := strings.Split(msg,"|")[2]
+		if content ==""{
+			this.SendMsg("message is empty,please type in characters")
+			return
+		}
+		remoteUser.SendMsg(this.Name+" send message to you : "+ "["+content+"]")
 	}else{
 		
 		this.server.BroadCast(this,msg)

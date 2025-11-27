@@ -83,7 +83,7 @@ func (this *Server) Handler(conn net.Conn) {
 		case <-isLive:
 			//user is active now,should reset the timer
 			//do nothing but stimulate select and renew the timer below
-		case <-time.After(time.Second*10):
+		case <-time.After(time.Second*60):
 			
 			//time limit exceeded
 			//force to close user
