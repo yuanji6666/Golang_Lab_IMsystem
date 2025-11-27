@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"sync"
 	"io"
+	"time"
 )
 type Server struct {
 	Ip string
@@ -53,6 +54,8 @@ func (this *Server) Handler(conn net.Conn) {
 
 	user.Online()	
 
+	isLive := make(chan bool)
+
 	//catch message from client
 	go func() {
 		buf := make([]byte,4096)
@@ -70,10 +73,33 @@ func (this *Server) Handler(conn net.Conn) {
 			msg:= string(buf[:n-1])
 
 			user.DoMessage(msg)
+
+			isLive <-true
 		}
 	}()
+	for{
+		
+		select{
+		case <-isLive:
+			//user is active now,should reset the timer
+			//do nothing but stimulate select and renew the timer below
+		case <-time.After(time.Second*10):
+			
+			//time limit exceeded
+			//force to close user
+			user.SendMsg("you have been kicked for inactive")
 
-	select{}
+			//destory resource	
+			close(user.C)
+
+			//close the connection
+			conn.Close()
+
+			//exit handler
+			return
+		}
+
+	}
 }
 
 //interface : start a server
