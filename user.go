@@ -1,11 +1,8 @@
 package main
-
 import (
 	"net"
 	"strings"
-	
 )
-
 type User struct {
 	Name string
 	Addr string
