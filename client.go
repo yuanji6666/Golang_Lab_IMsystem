@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net"
+	"flag"
 )
 
 type Client struct{
@@ -23,14 +24,21 @@ func NewClient(serverIp string,serverPort int) *Client {
 		fmt.Println("net.Dial error :", err)
 		return nil
 	}
-
 	client.conn=conn
-	
 	return client
+}
 
+var serverIp string
+var serverPort int
+func init() {
+	flag.StringVar(&serverIp, "ip", "127.0.0.1", "设置默认服务器ip地址（默认127.0.0.1）")
+	flag.IntVar(&serverPort, "port", 8888, "设置服务器端口（默认8888）")
 }
 func main(){
-	client := NewClient("127.0.0.1",8888)
+	
+	flag.Parse()
+
+	client := NewClient(serverIp,serverPort)
 	if client ==nil {
 		fmt.Println("---client connect failed---")
 		return	
@@ -38,6 +46,5 @@ func main(){
 	fmt.Println("---client connect succecd")
 
 	//start client bussiness
-
 	select{}
-}
+} 
