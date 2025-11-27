@@ -11,6 +11,7 @@ type Client struct{
 	ServerPort int
 	Name string
 	conn net.Conn
+	flag int
 }
 
 func NewClient(serverIp string,serverPort int) *Client {
@@ -28,6 +29,45 @@ func NewClient(serverIp string,serverPort int) *Client {
 	return client
 }
 
+func (client *Client) menu() bool {
+	var flag int
+
+	fmt.Println("1.公聊模式")
+	fmt.Println("2.私聊模式")
+	fmt.Println("3.重命名")
+	fmt.Println("0.结束")
+
+	fmt.Scanln(&flag)
+
+	if flag>= 0 &&flag <= 3{
+		client.flag=flag
+		return true
+	}else{
+		fmt.Println("请选择合适范围内的数字")
+		return false
+	}
+}
+
+func (client *Client) Run(){
+	client.flag=1
+	for client.flag != 0{
+		for client.menu() != true {
+		}
+
+		switch client.flag{
+		case 1:
+			fmt.Println("公聊模式启动...")
+			break
+		case 2:
+			fmt.Println("私聊模式启动...")
+			break
+		case 3:
+			fmt.Println("更新用户名选择...")
+			break
+		}
+
+	}
+}
 var serverIp string
 var serverPort int
 func init() {
@@ -43,8 +83,8 @@ func main(){
 		fmt.Println("---client connect failed---")
 		return	
 	}
-	fmt.Println("---client connect succecd")
+	fmt.Println("---client connect succecd---")
 
 	//start client bussiness
-	select{}
+	client.Run()
 } 
