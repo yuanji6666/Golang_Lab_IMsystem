@@ -53,13 +53,29 @@ func (this *User) SendMsg (msg string){
 //do message
 func (this *User)DoMessage(msg string){
 	if msg=="who"{
-	this.server.mapLock.Lock()
-	for _,user :=range this.server.OnlineMap {
-		onlineMsg := "[" +user.Addr + "]" +user.Name+ ":" + "online..."+"\n"
-		this.SendMsg(onlineMsg)
-	}
-	this.server.mapLock.Unlock()
+		this.server.mapLock.Lock()
+		for _,user :=range this.server.OnlineMap {
+			onlineMsg := "[" +user.Addr + "]" +user.Name+ ":" + "online..."+"\n"
+			this.SendMsg(onlineMsg)
+		}
+		this.server.mapLock.Unlock()
 
+	}else if len(msg)>7&&msg[:7]=="rename|"{
+		newName := msg[7:]
+		// if the newName exsited
+		_,ok := this.server.OnlineMap[newName]
+		if ok {
+			this.SendMsg("user name already exists")
+		}else {
+			this.server.mapLock.Lock()
+			delete(this.server.OnlineMap,this.Name)
+			this.server.OnlineMap[newName]=this
+			this.server.mapLock.Unlock()
+
+			this.Name=newName
+			this.SendMsg("success : name changed"+this.Name+ "\n")
+
+		}
 	}else{
 		
 		this.server.BroadCast(this,msg)
