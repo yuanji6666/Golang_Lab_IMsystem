@@ -1,1 +1,7 @@
-# 刘丹冰老师的八小时Golang课程练手小项目，一个简单的即时通信系统
+# A simple Instant-Message-System using golang
+| file       | usage                |
+| ---------- | -------------------- |
+| ./server   | start server         |
+| ./client   | start client         |
+| ./src      | source code          |
+| ./arch.png | architecture diagram |
